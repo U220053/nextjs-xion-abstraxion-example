@@ -294,20 +294,27 @@ export default function Page(): JSX.Element {
     const msg = {
       mint: {},
     };
+    // Set the fee in the correct denomination
+    const fee = {
+      amount: [{ amount: "0", denom: "uxion" }], // Adjust the amount as needed
+      gas: "500000",
+    };
 
     try {
       const mintRes = await client?.execute(
         account.bech32Address,
         mintContractAddress,
         msg,
-        {
-          amount: [{ amount: "0", denom: "uxion" }], // Replace with the actual mint cost and denom
-          gas: "500000",
-        },
+        fee,
         "",
-        []
+        [
+          {
+            denom:
+              "ibc/57097251ED81A232CE3C9D899E7C8096D6D87EF84BA203E12E424AA4C9B57A64", // Replace "usdc" with the correct denom if different
+            amount: mintAmount.toString(),
+          },
+        ]
       );
-
       setExecuteResult(mintRes);
     } catch (error) {
       console.log("Error:", error);

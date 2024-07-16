@@ -42,6 +42,11 @@ export default function RootLayout({
           config={{
             contracts: [
               "xion15fqknspn6pcepxht2ar89e728m335f5x57u2zhtrhndv86zd36sq20n9ev",
+              {
+                address:
+                  "xion15fqknspn6pcepxht2ar89e728m335f5x57u2zhtrhndv86zd36sq20n9ev",
+                amounts: [{ denom: "uxion", amount: "1000000" }],
+              },
             ],
           }}
         >
