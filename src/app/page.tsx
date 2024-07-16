@@ -1,113 +1,499 @@
+// "use client";
+// import { useEffect, useState } from "react";
+// import {
+//   Abstraxion,
+//   useAbstraxionAccount,
+//   useModal,
+// } from "@burnt-labs/abstraxion";
+// import { Button } from "@burnt-labs/ui";
+// import Image from "next/image";
+// import img from "./assets/hero.jpeg";
+
+// import puzzle from "./assets/Puzzle.svg";
+// import owner from "./assets/Users.svg";
+// import usdc from "./assets/USDC.svg";
+
+// export default function Page(): JSX.Element {
+//   // Abstraxion hooks
+//   const { data: account } = useAbstraxionAccount();
+
+//   // General state hooks
+//   const [showAbstraxion, setShowAbstraxion] = useModal();
+//   const [isConnected, setIsConnected] = useState(false);
+
+//   useEffect(() => {
+//     // Update the isConnected state whenever the account changes
+//     setIsConnected(account?.bech32Address !== "");
+//   }, [account]);
+//   console.log("isConnected", isConnected);
+//   console.log("account", account);
+
+//   return (
+//     <div className="mb-40">
+//       <main className=" top-0 right-0 m-4 flex flex-col items-end gap-4 p-4">
+//         {/* <h1 className="text-2xl font-bold tracking-tighter text-black dark:text-white">
+//         ABSTRAXION
+//       </h1> */}
+//         <div className="text-blue-500">
+//           <Button
+//             fullWidth
+//             onClick={() => {
+//               setShowAbstraxion(true);
+//             }}
+//             structure="base"
+//             // theme="secondary"
+//             style={{
+//               backgroundColor: "#2253FF",
+//             }}
+//           >
+//             {isConnected ? (
+//               <div className="0 flex items-center justify-center">
+//                 VIEW ACCOUNT
+//               </div>
+//             ) : (
+//               "CONNECT"
+//             )}
+//           </Button>
+//         </div>
+//         <div className="flex flex-col md:flex-row items-center justify-between max-sm:px-5">
+//           <div className="md:mr-8 md:ml-8  flex-shrink-0">
+//             <Image src={img} width={600} height={675} alt="home" />
+//           </div>
+//           <div className="mt-4 flex-grow md:mr-8">
+//             <div
+//               className="text-3xl md:text-4xl font-bold title-text mt-4 md:mt-[2rem]"
+//               style={{ color: "#2253FF" }}
+//             >
+//               Cliffton-INHP1001
+//             </div>
+//             <div>
+//               <p className="text-white font-medium mt-4">
+//                 The Cliffton Valley 3BHK Condo is a luxurious property located
+//                 in Shimla, Himachal Pradesh. With stunning mountain views and
+//                 modern amenities, this high-end holiday home offers a unique
+//                 investment opportunity. Own a fraction of this premium property
+//                 and earn rental income while benefiting from potential
+//                 appreciation. Invest in Cliffton Valley with FractIt.
+//               </p>
+
+//               <div className="text-white mt-4">
+//                 <p>
+//                   <span className="font-bold " style={{ color: "#2253FF" }}>
+//                     Property Type:
+//                   </span>{" "}
+//                   Holiday Home
+//                 </p>
+//                 <p>
+//                   <span className="font-bold " style={{ color: "#2253FF" }}>
+//                     Condominium Bedrooms/Bathrooms:
+//                   </span>{" "}
+//                   3 Bed / 3 Bath
+//                 </p>
+//                 <p>
+//                   <span className="font-bold " style={{ color: "#2253FF" }}>
+//                     Estimated APY:
+//                   </span>{" "}
+//                   18.1% (6.38% rental yield + 11.7% appreciation)
+//                 </p>
+//                 <p>
+//                   <span className="font-bold " style={{ color: "#2253FF" }}>
+//                     Fractible (Token) Price:
+//                   </span>{" "}
+//                   $1000 (USDC)
+//                 </p>
+//                 <p>
+//                   <span className="font-bold " style={{ color: "#2253FF" }}>
+//                     Estimated Return per Fractible:
+//                   </span>{" "}
+//                   $181/year
+//                 </p>
+//                 <p>
+//                   <span className="font-bold " style={{ color: "#2253FF" }}>
+//                     Max Allocation:
+//                   </span>{" "}
+//                   25 Fractibles/Wallet
+//                 </p>
+//               </div>
+//             </div>
+//             <div className="mt-4">
+//               <span className="text-white text-xl md:text-4xl mt-4 body-text">
+//                 235/235 Minted
+//               </span>
+//             </div>
+//             <div className="flex gap-x-2 lg:gap-x-4">
+//               {/* <div className="mt-4  flex flex-row gap-x-2">
+//               <input
+//                 type="text"
+//                 placeholder="Enter Amount"
+//                 disabled
+//                 className="w-full md:w-[15rem] text-lg font-medium font-Montechmed mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row border items-center justify-center place-items-center gap-x-2 bg-white"
+//                 style={{ color: "#2253FF" }}
+//               />
+//               <button
+//                 className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2 cursor-not-allowed`}
+//                 disabled
+//                 style={{
+//                   backgroundColor: "#2253FF",
+//                 }}
+//               >
+//                 MINT
+//               </button>
+//             </div> */}
+//               {isConnected ? (
+//                 <div className="mt-4 flex flex-row gap-x-2">
+//                   <input
+//                     type="text"
+//                     placeholder="Enter Amount"
+//                     className="w-full md:w-[15rem] text-lg font-medium font-Montechmed mt-4 md:mt-[1rem] px-4 py-2 text-center flex flex-row border items-center justify-center place-items-center gap-x-2 bg-white"
+//                     style={{ color: "#2253FF" }}
+//                   />
+//                   <button
+//                     className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[1rem] px-4 py-2 `}
+//                     style={{
+//                       backgroundColor: "#2253FF",
+//                     }}
+//                   >
+//                     MINT
+//                   </button>
+//                 </div>
+//               ) : (
+//                 <Button
+//                   // fullWidth
+//                   className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2 `}
+//                   onClick={() => {
+//                     setShowAbstraxion(true);
+//                   }}
+//                   structure="base"
+//                   // theme="secondary"
+//                   style={{
+//                     backgroundColor: "#2253FF",
+//                   }}
+//                 >
+//                   CONNECT
+//                 </Button>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+
+//         <Abstraxion
+//           onClose={() => {
+//             setShowAbstraxion(false);
+//           }}
+//         />
+//       </main>
+//       <div
+//         className=" pb-4 mx-10 md:mx-28 items-center justify-center mt-[1rem] flex flex-col md:flex-row border border-white gap-x-4 gradient-bg font-bold"
+//         style={{ color: "#2253FF" }}
+//       >
+//         <span className=" text-xl mt-4 body-text flex flex-col items-center">
+//           <div className="flex flex-row">
+//             <Image
+//               src={puzzle}
+//               alt="puzzle"
+//               height={30}
+//               width={30}
+//               className="mr-2 mt-[-0.5rem]"
+//             />
+//             235
+//           </div>
+//           <div>Total Fractibles</div>
+//         </span>
+//         <span className=" text-xl mt-4 body-text flex flex-col items-center">
+//           <div className="flex flex-row">
+//             <Image
+//               src={owner}
+//               alt="puzzle"
+//               height={30}
+//               width={30}
+//               className="mr-2"
+//             />
+//             17
+//           </div>
+//           <div>Total Owners</div>
+//         </span>
+//         <span className=" text-xl mt-4 body-text flex flex-col items-center">
+//           <div className="flex flex-row">
+//             <Image
+//               src={usdc}
+//               alt="puzzle"
+//               height={30}
+//               width={30}
+//               className="mr-2 "
+//             />
+//             1000
+//           </div>
+//           <div>Floor Price (USDC)</div>
+//         </span>
+//         <span className=" text-xl mt-4 body-text flex flex-col items-center">
+//           <div className="flex flex-row">
+//             <Image
+//               src={usdc}
+//               alt="puzzle"
+//               height={30}
+//               width={30}
+//               className="mr-2 "
+//             />
+//             235K
+//           </div>
+//           <div>Volume Traded (USDC)</div>
+//         </span>
+//       </div>
+//     </div>
+//   );
+// }
+"use client";
+import { useEffect, useState } from "react";
+import {
+  Abstraxion,
+  useAbstraxionAccount,
+  useAbstraxionSigningClient,
+  useModal,
+} from "@burnt-labs/abstraxion";
+import { Button, Input } from "@burnt-labs/ui";
 import Image from "next/image";
+import img from "./assets/hero.jpeg";
+import puzzle from "./assets/Puzzle.svg";
+import owner from "./assets/Users.svg";
+import usdc from "./assets/USDC.svg";
+import type { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 
-export default function Home() {
+const mintContractAddress =
+  "xion15fqknspn6pcepxht2ar89e728m335f5x57u2zhtrhndv86zd36sq20n9ev"; // Replace with your contract address
+
+type ExecuteResultOrUndefined = ExecuteResult | undefined;
+
+export default function Page(): JSX.Element {
+  // Abstraxion hooks
+  const { data: account } = useAbstraxionAccount();
+  const { client, logout } = useAbstraxionSigningClient();
+
+  // General state hooks
+  const [showAbstraxion, setShowAbstraxion] = useModal();
+  const [isConnected, setIsConnected] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [executeResult, setExecuteResult] =
+    useState<ExecuteResultOrUndefined>(undefined);
+  const [mintAmount, setMintAmount] = useState<string>("");
+
+  useEffect(() => {
+    // Update the isConnected state whenever the account changes
+    setIsConnected(account?.bech32Address !== "");
+  }, [account]);
+
+  async function handleMint(): Promise<void> {
+    if (!mintAmount) return;
+
+    setLoading(true);
+
+    // Log the addresses and mint amount
+    console.log("Mint Contract Address:", mintContractAddress);
+    console.log("User Address:", account?.bech32Address);
+    console.log("Mint Amount:", mintAmount);
+
+    const msg = {
+      mint: {},
+    };
+
+    try {
+      const mintRes = await client?.execute(
+        account.bech32Address,
+        mintContractAddress,
+        msg,
+        {
+          amount: [{ amount: "0", denom: "uxion" }], // Replace with the actual mint cost and denom
+          gas: "500000",
+        },
+        "",
+        []
+      );
+
+      setExecuteResult(mintRes);
+    } catch (error) {
+      console.log("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="mb-40">
+      <main className=" top-0 right-0 m-4 flex flex-col items-end gap-4 p-4">
+        <div className="text-blue-500">
+          <Button
+            fullWidth
+            onClick={() => {
+              setShowAbstraxion(true);
+            }}
+            structure="base"
+            style={{
+              backgroundColor: "#2253FF",
+            }}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            {isConnected ? (
+              <div className="0 flex items-center justify-center">
+                VIEW ACCOUNT
+              </div>
+            ) : (
+              "CONNECT"
+            )}
+          </Button>
         </div>
-      </div>
+        <div className="flex flex-col md:flex-row items-center justify-between max-sm:px-5">
+          <div className="md:mr-8 md:ml-8  flex-shrink-0">
+            <Image src={img} width={600} height={675} alt="home" />
+          </div>
+          <div className="mt-4 flex-grow md:mr-8">
+            <div
+              className="text-3xl md:text-4xl font-bold title-text mt-4 md:mt-[2rem]"
+              style={{ color: "#2253FF" }}
+            >
+              Cliffton-INHP1001
+            </div>
+            <div>
+              <p className="text-white font-medium mt-4">
+                The Cliffton Valley 3BHK Condo is a luxurious property located
+                in Shimla, Himachal Pradesh. With stunning mountain views and
+                modern amenities, this high-end holiday home offers a unique
+                investment opportunity. Own a fraction of this premium property
+                and earn rental income while benefiting from potential
+                appreciation. Invest in Cliffton Valley with FractIt.
+              </p>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+              <div className="text-white mt-4">
+                <p>
+                  <span className="font-bold " style={{ color: "#2253FF" }}>
+                    Property Type:
+                  </span>{" "}
+                  Holiday Home
+                </p>
+                <p>
+                  <span className="font-bold " style={{ color: "#2253FF" }}>
+                    Condominium Bedrooms/Bathrooms:
+                  </span>{" "}
+                  3 Bed / 3 Bath
+                </p>
+                <p>
+                  <span className="font-bold " style={{ color: "#2253FF" }}>
+                    Estimated APY:
+                  </span>{" "}
+                  18.1% (6.38% rental yield + 11.7% appreciation)
+                </p>
+                <p>
+                  <span className="font-bold " style={{ color: "#2253FF" }}>
+                    Fractible (Token) Price:
+                  </span>{" "}
+                  $1000 (USDC)
+                </p>
+                <p>
+                  <span className="font-bold " style={{ color: "#2253FF" }}>
+                    Estimated Return per Fractible:
+                  </span>{" "}
+                  $181/year
+                </p>
+                <p>
+                  <span className="font-bold " style={{ color: "#2253FF" }}>
+                    Max Allocation:
+                  </span>{" "}
+                  25 Fractibles/Wallet
+                </p>
+              </div>
+            </div>
+            <div className="mt-4">
+              <span className="text-white text-xl md:text-4xl mt-4 body-text">
+                235/235 Minted
+              </span>
+            </div>
+            <div className="flex gap-x-2 lg:gap-x-4">
+              {isConnected ? (
+                <div className="mt-4 flex flex-row gap-x-2">
+                  <Input
+                    type="text"
+                    placeholder="Enter Amount"
+                    className="w-full md:w-[15rem] text-lg text-black font-medium font-Montechmed mt-4 md:mt-[1rem] px-4 py-2 text-center flex flex-row border items-center justify-center place-items-center gap-x-2 "
+                    value={mintAmount}
+                    onChange={(e) => setMintAmount(e.target.value)}
+                    style={{ color: "#2253FF" }}
+                  />
+                  <Button
+                    className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[1rem] px-4 py-2`}
+                    style={{
+                      backgroundColor: "#2253FF",
+                    }}
+                    onClick={handleMint}
+                    disabled={loading}
+                  >
+                    {loading ? "LOADING..." : "MINT"}
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2`}
+                  onClick={() => {
+                    setShowAbstraxion(true);
+                  }}
+                  structure="base"
+                  style={{
+                    backgroundColor: "#2253FF",
+                  }}
+                >
+                  CONNECT
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <Abstraxion
+          onClose={() => {
+            setShowAbstraxion(false);
+          }}
         />
+      </main>
+      <div
+        className=" pb-4 mx-10 md:mx-28 items-center justify-center mt-[1rem] flex flex-col md:flex-row border border-white gap-x-4 gradient-bg font-bold"
+        style={{ color: "#2253FF" }}
+      >
+        <span className=" text-xl mt-4 body-text flex flex-col items-center">
+          <div className="flex flex-row">
+            <Image
+              src={puzzle}
+              alt="puzzle"
+              height={30}
+              width={30}
+              className="mr-2 mt-[-0.5rem]"
+            />
+            235
+          </div>
+          <div>Total Fractibles</div>
+        </span>
+        <span className=" text-xl mt-4 body-text flex flex-col items-center">
+          <div className="flex flex-row">
+            <Image
+              src={owner}
+              alt="puzzle"
+              height={30}
+              width={30}
+              className="mr-2"
+            />
+            17
+          </div>
+          <div>Total Owners</div>
+        </span>
+        <span className=" text-xl mt-4 body-text flex flex-col items-center">
+          <div className="flex flex-row">
+            <Image
+              src={usdc}
+              alt="puzzle"
+              height={30}
+              width={30}
+              className="mr-2 "
+            />
+            1000
+          </div>
+          <div>Floor Price (USDC)</div>
+        </span>
       </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
 }
