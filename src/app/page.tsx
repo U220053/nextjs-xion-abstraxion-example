@@ -3,37 +3,85 @@
 // import {
 //   Abstraxion,
 //   useAbstraxionAccount,
+//   useAbstraxionSigningClient,
 //   useModal,
 // } from "@burnt-labs/abstraxion";
-// import { Button } from "@burnt-labs/ui";
+// import { Button, Input } from "@burnt-labs/ui";
 // import Image from "next/image";
 // import img from "./assets/hero.jpeg";
-
 // import puzzle from "./assets/Puzzle.svg";
 // import owner from "./assets/Users.svg";
 // import usdc from "./assets/USDC.svg";
+// import type { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
+
+// const mintContractAddress =
+//   "xion15fqknspn6pcepxht2ar89e728m335f5x57u2zhtrhndv86zd36sq20n9ev";
+
+// type ExecuteResultOrUndefined = ExecuteResult | undefined;
 
 // export default function Page(): JSX.Element {
 //   // Abstraxion hooks
 //   const { data: account } = useAbstraxionAccount();
+//   const { client, logout } = useAbstraxionSigningClient();
 
 //   // General state hooks
 //   const [showAbstraxion, setShowAbstraxion] = useModal();
 //   const [isConnected, setIsConnected] = useState(false);
+//   const [loading, setLoading] = useState(false);
+//   const [executeResult, setExecuteResult] =
+//     useState<ExecuteResultOrUndefined>(undefined);
+//   const [mintAmount, setMintAmount] = useState<string>("");
 
 //   useEffect(() => {
 //     // Update the isConnected state whenever the account changes
 //     setIsConnected(account?.bech32Address !== "");
 //   }, [account]);
-//   console.log("isConnected", isConnected);
-//   console.log("account", account);
+
+//   async function handleMint(): Promise<void> {
+//     if (!mintAmount) return;
+
+//     setLoading(true);
+
+//     // Log the addresses and mint amount
+//     console.log("Mint Contract Address:", mintContractAddress);
+//     console.log("User Address:", account?.bech32Address);
+//     console.log("Mint Amount:", mintAmount);
+
+//     const msg = {
+//       mint: {},
+//     };
+//     // Set the fee in the correct denomination
+//     const fee = {
+//       amount: [{ amount: "0", denom: "uxion" }], // Adjust the amount as needed
+//       gas: "500000",
+//     };
+
+//     try {
+//       const mintRes = await client?.execute(
+//         account.bech32Address,
+//         mintContractAddress,
+//         msg,
+//         fee,
+//         "",
+//         [
+//           {
+//             denom:
+//               "ibc/57097251ED81A232CE3C9D899E7C8096D6D87EF84BA203E12E424AA4C9B57A64",
+//             amount: mintAmount.toString(),
+//           },
+//         ]
+//       );
+//       setExecuteResult(mintRes);
+//     } catch (error) {
+//       console.log("Error:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   }
 
 //   return (
 //     <div className="mb-40">
 //       <main className=" top-0 right-0 m-4 flex flex-col items-end gap-4 p-4">
-//         {/* <h1 className="text-2xl font-bold tracking-tighter text-black dark:text-white">
-//         ABSTRAXION
-//       </h1> */}
 //         <div className="text-blue-500">
 //           <Button
 //             fullWidth
@@ -41,7 +89,6 @@
 //               setShowAbstraxion(true);
 //             }}
 //             structure="base"
-//             // theme="secondary"
 //             style={{
 //               backgroundColor: "#2253FF",
 //             }}
@@ -121,50 +168,34 @@
 //               </span>
 //             </div>
 //             <div className="flex gap-x-2 lg:gap-x-4">
-//               {/* <div className="mt-4  flex flex-row gap-x-2">
-//               <input
-//                 type="text"
-//                 placeholder="Enter Amount"
-//                 disabled
-//                 className="w-full md:w-[15rem] text-lg font-medium font-Montechmed mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row border items-center justify-center place-items-center gap-x-2 bg-white"
-//                 style={{ color: "#2253FF" }}
-//               />
-//               <button
-//                 className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2 cursor-not-allowed`}
-//                 disabled
-//                 style={{
-//                   backgroundColor: "#2253FF",
-//                 }}
-//               >
-//                 MINT
-//               </button>
-//             </div> */}
 //               {isConnected ? (
 //                 <div className="mt-4 flex flex-row gap-x-2">
-//                   <input
+//                   <Input
 //                     type="text"
 //                     placeholder="Enter Amount"
-//                     className="w-full md:w-[15rem] text-lg font-medium font-Montechmed mt-4 md:mt-[1rem] px-4 py-2 text-center flex flex-row border items-center justify-center place-items-center gap-x-2 bg-white"
+//                     className="w-full md:w-[15rem] text-lg text-black font-medium font-Montechmed mt-4 md:mt-[1rem] px-4 py-2 text-center flex flex-row border items-center justify-center place-items-center gap-x-2 "
+//                     value={mintAmount}
+//                     onChange={(e) => setMintAmount(e.target.value)}
 //                     style={{ color: "#2253FF" }}
 //                   />
-//                   <button
-//                     className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[1rem] px-4 py-2 `}
+//                   <Button
+//                     className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[1rem] px-4 py-2`}
 //                     style={{
 //                       backgroundColor: "#2253FF",
 //                     }}
+//                     onClick={handleMint}
+//                     disabled={loading}
 //                   >
-//                     MINT
-//                   </button>
+//                     {loading ? "LOADING..." : "MINT"}
+//                   </Button>
 //                 </div>
 //               ) : (
 //                 <Button
-//                   // fullWidth
-//                   className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2 `}
+//                   className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2`}
 //                   onClick={() => {
 //                     setShowAbstraxion(true);
 //                   }}
 //                   structure="base"
-//                   // theme="secondary"
 //                   style={{
 //                     backgroundColor: "#2253FF",
 //                   }}
@@ -225,19 +256,6 @@
 //           </div>
 //           <div>Floor Price (USDC)</div>
 //         </span>
-//         <span className=" text-xl mt-4 body-text flex flex-col items-center">
-//           <div className="flex flex-row">
-//             <Image
-//               src={usdc}
-//               alt="puzzle"
-//               height={30}
-//               width={30}
-//               className="mr-2 "
-//             />
-//             235K
-//           </div>
-//           <div>Volume Traded (USDC)</div>
-//         </span>
 //       </div>
 //     </div>
 //   );
@@ -258,8 +276,12 @@ import owner from "./assets/Users.svg";
 import usdc from "./assets/USDC.svg";
 import type { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 
-const mintContractAddress =
-  "xion15fqknspn6pcepxht2ar89e728m335f5x57u2zhtrhndv86zd36sq20n9ev"; // Replace with your contract address
+// Load contract address and other settings from environment variables
+const mintContractAddress = process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS ?? "";
+const feeAmount = process.env.NEXT_PUBLIC_FEE_AMOUNT || "0";
+const feeDenom = process.env.NEXT_PUBLIC_FEE_DENOM || "uxion";
+const gasLimit = process.env.NEXT_PUBLIC_GAS_LIMIT || "500000";
+const ibcDenom = process.env.NEXT_PUBLIC_IBC_DENOM ?? "";
 
 type ExecuteResultOrUndefined = ExecuteResult | undefined;
 
@@ -296,8 +318,8 @@ export default function Page(): JSX.Element {
     };
     // Set the fee in the correct denomination
     const fee = {
-      amount: [{ amount: "0", denom: "uxion" }], // Adjust the amount as needed
-      gas: "500000",
+      amount: [{ amount: feeAmount, denom: feeDenom }], // Adjust the amount as needed
+      gas: gasLimit,
     };
 
     try {
@@ -309,8 +331,7 @@ export default function Page(): JSX.Element {
         "",
         [
           {
-            denom:
-              "ibc/57097251ED81A232CE3C9D899E7C8096D6D87EF84BA203E12E424AA4C9B57A64", // Replace "usdc" with the correct denom if different
+            denom: ibcDenom,
             amount: mintAmount.toString(),
           },
         ]
