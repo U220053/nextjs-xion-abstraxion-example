@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import {
   Abstraxion,
   useAbstraxionAccount,
@@ -7,14 +8,17 @@ import {
   useModal,
 } from "@burnt-labs/abstraxion";
 import { Button, Input } from "@burnt-labs/ui";
-import Image from "next/image";
-import img from "./assets/hero.jpeg";
-import puzzle from "./assets/Puzzle.svg";
-import owner from "./assets/Users.svg";
-import usdc from "./assets/USDC.svg";
 import type { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
+import logo from "./assets/fractitilogo.png";
+import hero from "./assets/imghero.png";
+import img1 from "./assets/img.png";
+import img2 from "./assets/img2.png";
+import img3 from "./assets/img3.png";
+import img4 from "./assets/img4.png";
+import img5 from "./assets/img5.png";
+import img6 from "./assets/img6.png";
 
-// Load contract address and other settings from environment variables
+// Environment variables
 const mintContractAddress = process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS ?? "";
 const feeAmount = process.env.NEXT_PUBLIC_FEE_AMOUNT || "0";
 const feeDenom = process.env.NEXT_PUBLIC_FEE_DENOM || "uxion";
@@ -23,243 +27,269 @@ const ibcDenom = process.env.NEXT_PUBLIC_IBC_DENOM ?? "";
 
 type ExecuteResultOrUndefined = ExecuteResult | undefined;
 
-export default function Page(): JSX.Element {
-  // Abstraxion hooks
+interface ExpandableSectionProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+const ExpandableSection: React.FC<ExpandableSectionProps> = ({
+  title,
+  children,
+}) => {
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
+  return (
+    <div className="mt-8">
+      <div className="flex justify-between items-center bg-blue-100 rounded-md p-2">
+        <h2 className="text-xl font-semibold">{title}</h2>
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="text-2xl font-bold"
+        >
+          {isExpanded ? "-" : "+"}
+        </button>
+      </div>
+      {isExpanded && <div className="mt-2">{children}</div>}
+    </div>
+  );
+};
+
+const Home: React.FC = () => {
   const { data: account } = useAbstraxionAccount();
   const { client, logout } = useAbstraxionSigningClient();
-
-  // General state hooks
   const [showAbstraxion, setShowAbstraxion] = useModal();
-  const [isConnected, setIsConnected] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [executeResult, setExecuteResult] =
     useState<ExecuteResultOrUndefined>(undefined);
   const [mintAmount, setMintAmount] = useState<string>("");
 
   useEffect(() => {
-    // Update the isConnected state whenever the account changes
-    setIsConnected(account?.bech32Address !== "");
+    setIsConnected(!!account?.bech32Address);
   }, [account]);
 
-  async function handleMint(): Promise<void> {
+  const handleMint = async (): Promise<void> => {
     if (!mintAmount) return;
 
     setLoading(true);
 
-    // Log the addresses and mint amount
     console.log("Mint Contract Address:", mintContractAddress);
     console.log("User Address:", account?.bech32Address);
     console.log("Mint Amount:", mintAmount);
 
-    const msg = {
-      mint: {},
-    };
-    // Set the fee in the correct denomination
+    const msg = { mint: {} };
     const fee = {
-      amount: [{ amount: feeAmount, denom: feeDenom }], // Adjust the amount as needed
+      amount: [{ amount: feeAmount, denom: feeDenom }],
       gas: gasLimit,
     };
 
     try {
-      const mintRes = await client?.execute(
-        account.bech32Address,
-        mintContractAddress,
-        msg,
-        fee,
-        "",
-        [
-          {
-            denom: ibcDenom,
-            amount: mintAmount.toString(),
-          },
-        ]
-      );
-      setExecuteResult(mintRes);
+      if (client && account) {
+        const mintRes = await client.execute(
+          account.bech32Address,
+          mintContractAddress,
+          msg,
+          fee,
+          "",
+          [{ denom: ibcDenom, amount: mintAmount }]
+        );
+        setExecuteResult(mintRes);
+      }
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Error:", error);
+      alert(error);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="mb-40">
-      <main className=" top-0 right-0 m-4 flex flex-col items-end gap-4 p-4">
-        <div className="text-blue-500">
-          <Button
-            fullWidth
-            onClick={() => {
-              setShowAbstraxion(true);
-            }}
-            structure="base"
-            style={{
-              backgroundColor: "#2253FF",
-            }}
-          >
-            {isConnected ? (
-              <div className="0 flex items-center justify-center">
-                VIEW ACCOUNT
-              </div>
-            ) : (
-              "CONNECT"
-            )}
-          </Button>
-        </div>
-        <div className="flex flex-col md:flex-row items-center justify-between max-sm:px-5">
-          <div className="md:mr-8 md:ml-8  flex-shrink-0">
-            <Image src={img} width={600} height={675} alt="home" />
-          </div>
-          <div className="mt-4 flex-grow md:mr-8">
-            <div
-              className="text-3xl md:text-4xl font-bold title-text mt-4 md:mt-[2rem]"
-              style={{ color: "#2253FF" }}
-            >
-              Cliffton-INHP1001
-            </div>
-            <div>
-              <p className="text-white font-medium mt-4">
-                The Cliffton Valley 3BHK Condo is a luxurious property located
-                in Shimla, Himachal Pradesh. With stunning mountain views and
-                modern amenities, this high-end holiday home offers a unique
-                investment opportunity. Own a fraction of this premium property
-                and earn rental income while benefiting from potential
-                appreciation. Invest in Cliffton Valley with FractIt.
-              </p>
+    <div className="container mx-auto p-4 burnt-bg text-black">
+      <header className="flex justify-between items-center mb-8">
+        <Image src={logo} alt="Fractit Logo" width={100} height={30} />
+        <Button
+          onClick={() => setShowAbstraxion(true)}
+          style={{ backgroundColor: "#3b82f6", color: "white" }}
+          className="text-white px-4 py-2 rounded"
+        >
+          {isConnected ? "VIEW ACCOUNT" : "CONNECT WALLET"}
+        </Button>
+      </header>
 
-              <div className="text-white mt-4">
-                <p>
-                  <span className="font-bold " style={{ color: "#2253FF" }}>
-                    Property Type:
-                  </span>{" "}
-                  Holiday Home
-                </p>
-                <p>
-                  <span className="font-bold " style={{ color: "#2253FF" }}>
-                    Condominium Bedrooms/Bathrooms:
-                  </span>{" "}
-                  3 Bed / 3 Bath
-                </p>
-                <p>
-                  <span className="font-bold " style={{ color: "#2253FF" }}>
-                    Estimated APY:
-                  </span>{" "}
-                  18.1% (6.38% rental yield + 11.7% appreciation)
-                </p>
-                <p>
-                  <span className="font-bold " style={{ color: "#2253FF" }}>
-                    Fractible (Token) Price:
-                  </span>{" "}
-                  $1000 (USDC)
-                </p>
-                <p>
-                  <span className="font-bold " style={{ color: "#2253FF" }}>
-                    Estimated Return per Fractible:
-                  </span>{" "}
-                  $181/year
-                </p>
-                <p>
-                  <span className="font-bold " style={{ color: "#2253FF" }}>
-                    Max Allocation:
-                  </span>{" "}
-                  25 Fractibles/Wallet
-                </p>
-              </div>
-            </div>
-            <div className="mt-4">
-              <span className="text-white text-xl md:text-4xl mt-4 body-text">
-                235/235 Minted
-              </span>
-            </div>
-            <div className="flex gap-x-2 lg:gap-x-4">
-              {isConnected ? (
-                <div className="mt-4 flex flex-row gap-x-2">
-                  <Input
-                    type="text"
-                    placeholder="Enter Amount"
-                    className="w-full md:w-[15rem] text-lg text-black font-medium font-Montechmed mt-4 md:mt-[1rem] px-4 py-2 text-center flex flex-row border items-center justify-center place-items-center gap-x-2 "
-                    value={mintAmount}
-                    onChange={(e) => setMintAmount(e.target.value)}
-                    style={{ color: "#2253FF" }}
-                  />
-                  <Button
-                    className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[1rem] px-4 py-2`}
-                    style={{
-                      backgroundColor: "#2253FF",
-                    }}
-                    onClick={handleMint}
-                    disabled={loading}
-                  >
-                    {loading ? "LOADING..." : "MINT"}
-                  </Button>
+      <main className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <Image
+            src={hero}
+            alt="Dubai Apartment"
+            width={700}
+            height={400}
+            className="rounded-lg mb-4 custom-image"
+          />
+          <div className="grid grid-cols-3 gap-2">
+            <Image
+              src={img6}
+              alt={`Dubai Apartment Image 1`}
+              width={200}
+              height={150}
+              className="rounded"
+            />
+            <Image
+              src={img1}
+              alt={`Dubai Apartment Image 1`}
+              width={200}
+              height={150}
+              className="rounded"
+            />
+            <Image
+              src={img2}
+              alt={`Dubai Apartment Image 1`}
+              width={200}
+              height={150}
+              className="rounded"
+            />
+            <Image
+              src={img3}
+              alt={`Dubai Apartment Image 1`}
+              width={200}
+              height={150}
+              className="rounded"
+            />
+            <Image
+              src={img4}
+              alt={`Dubai Apartment Image 1`}
+              width={200}
+              height={150}
+              className="rounded"
+            />
+            <Image
+              src={img5}
+              alt={`Dubai Apartment Image 1`}
+              width={200}
+              height={150}
+              className="rounded"
+            />
+          </div>
+        </div>
+
+        <div>
+          <h1 className="text-3xl font-bold mb-4">Dubai Apartment</h1>
+          <div className="mb-6">
+            <p className="text-gray-600 mb-2">Sale Ends In</p>
+            <div className="flex space-x-10">
+              {["Days", "hours", "minutes", "seconds"].map((unit, i) => (
+                <div key={unit} className="text-center">
+                  <div className="text-2xl font-bold">
+                    {[21, 11, 35, 24][i]}
+                  </div>
+                  <div className="text-sm text-gray-500">{unit}</div>
                 </div>
-              ) : (
-                <Button
-                  className={`w-full md:w-[15rem] text-white text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2`}
-                  onClick={() => {
-                    setShowAbstraxion(true);
-                  }}
-                  structure="base"
-                  style={{
-                    backgroundColor: "#2253FF",
-                  }}
-                >
-                  CONNECT
-                </Button>
-              )}
+              ))}
             </div>
           </div>
-        </div>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Amount
+            </label>
+            {isConnected ? (
+              <input
+                type="text"
+                placeholder="Enter Amount"
+                className="w-full text-black border rounded p-2"
+                value={mintAmount}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setMintAmount(e.target.value)
+                }
+              />
+            ) : (
+              <input
+                type="number"
+                className="w-full text-black border rounded p-2 cursor-not-allowed"
+                disabled
+              />
+            )}
+            <div className="flex justify-between mt-2 ">
+              <span style={{ color: "#3b82f6" }} className="font-bold">
+                9.52 USDC
+              </span>
+              <span>235/500 Minted</span>
+            </div>
+          </div>
 
-        <Abstraxion
-          onClose={() => {
-            setShowAbstraxion(false);
-          }}
-        />
+          {isConnected ? (
+            <Button
+              style={{ backgroundColor: "#3b82f6", color: "white" }}
+              className="w-full bg-blue-500 text-white py-3 rounded font-semibold"
+              onClick={handleMint}
+              disabled={loading}
+            >
+              {loading ? "MINTING..." : "MINT NOW"}
+            </Button>
+          ) : (
+            <Button
+              style={{ backgroundColor: "#3b82f6", color: "white" }}
+              className="w-full bg-blue-500 text-white py-3 rounded font-semibold"
+              onClick={() => setShowAbstraxion(true)}
+            >
+              CONNECT WALLET
+            </Button>
+          )}
+
+          <ExpandableSection title="Description">
+            <p className="text-gray-600">
+              Tattooed Kitty Gang ("TKG") is a collection of 666 badass kitty
+              gangsters, with symbol of tattoos, living in the Proud Kitty Gang
+              ("PKG") metaverse. Each TKG is an 1/1 ID as gangster member & all
+              the joint rights.
+            </p>
+          </ExpandableSection>
+
+          <ExpandableSection title="Details">
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                ["Lot area (sqft):", "480 sqft"],
+                ["Home area (sqft):", "350 sqft"],
+                ["Lot dimensions:", "100x35"],
+                ["Rooms:", "8"],
+                ["Beds:", "4"],
+                ["Baths:", "2"],
+                ["Garages:", "1"],
+                ["Price ($):", "$3500"],
+                ["Year built:", "1998"],
+                ["Status:", "For Sale"],
+              ].map(([key, value]) => (
+                <div key={key}>
+                  <span className="font-medium">{key}</span> {value}
+                </div>
+              ))}
+            </div>
+          </ExpandableSection>
+
+          <ExpandableSection title="FAQs">
+            <div className="grid grid-cols-1 gap-4">
+              {[
+                ["Is the property furnished?", "Yes"],
+                ["Is the property pet-friendly?", "No"],
+                ["Is the property smoke-free?", "Yes"],
+                ["Is the property wheelchair accessible?", "No"],
+              ].map(([question, answer]) => (
+                <div key={question}>
+                  <span className="font-medium">{question}</span>
+                  <br />
+                  {answer}
+                </div>
+              ))}
+            </div>
+          </ExpandableSection>
+        </div>
       </main>
-      <div
-        className=" pb-4 mx-10 md:mx-28 items-center justify-center mt-[1rem] flex flex-col md:flex-row border border-white gap-x-4 gradient-bg font-bold"
-        style={{ color: "#2253FF" }}
-      >
-        <span className=" text-xl mt-4 body-text flex flex-col items-center">
-          <div className="flex flex-row">
-            <Image
-              src={puzzle}
-              alt="puzzle"
-              height={30}
-              width={30}
-              className="mr-2 mt-[-0.5rem]"
-            />
-            235
-          </div>
-          <div>Total Fractibles</div>
-        </span>
-        <span className=" text-xl mt-4 body-text flex flex-col items-center">
-          <div className="flex flex-row">
-            <Image
-              src={owner}
-              alt="puzzle"
-              height={30}
-              width={30}
-              className="mr-2"
-            />
-            17
-          </div>
-          <div>Total Owners</div>
-        </span>
-        <span className=" text-xl mt-4 body-text flex flex-col items-center">
-          <div className="flex flex-row">
-            <Image
-              src={usdc}
-              alt="puzzle"
-              height={30}
-              width={30}
-              className="mr-2 "
-            />
-            1000
-          </div>
-          <div>Floor Price (USDC)</div>
-        </span>
-      </div>
+
+      <Abstraxion
+        onClose={() => {
+          setShowAbstraxion(false);
+        }}
+      />
     </div>
   );
-}
+};
+
+export default Home;

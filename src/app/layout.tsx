@@ -23,10 +23,10 @@ export default function RootLayout({
           config={{
             contracts: [
               mintContractAddress ? mintContractAddress : "",
-              {
-                address: mintContractAddress ? mintContractAddress : "",
-                amounts: [{ denom: "uxion", amount: "1000000" }],
-              },
+              // {
+              //   address: mintContractAddress ? mintContractAddress : "",
+              //   amounts: [{ denom: "uxion", amount: "1000000" }],
+              // },
             ],
           }}
         >

@@ -31,3 +31,11 @@ body {
     text-wrap: balance;
   }
 }
+.burnt-bg {
+  background-color: white !important; /* or any other desired color */
+}
+.custom-image {
+  max-width: 100%; /* Adjust as needed */
+  height: auto; /* Maintain aspect ratio */
+  max-height: 400px; /* Set a max height */
+}
