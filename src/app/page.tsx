@@ -125,6 +125,7 @@ const Home: React.FC = () => {
       );
 
       console.log("Mint Result:", mintRes);
+
       setExecuteResult(mintRes);
       toast.success("Token minted successfully!");
       checkUsdcBalance();
