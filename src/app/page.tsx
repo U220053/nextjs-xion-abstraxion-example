@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import Image from "next/image";
 import {
   Abstraxion,
@@ -22,6 +22,8 @@ import img5 from "./assets/img5.png";
 import img6 from "./assets/img6.png";
 
 // Environment variables
+const nftContractAddress =
+  "xion13cllmxz3npueh3krl0rfqlvgs8gcjzz2rek6da760mhcgmdwfs2qtsddc8";
 const mintContractAddress = process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS ?? "";
 const feeAmount = process.env.NEXT_PUBLIC_FEE_AMOUNT || "0";
 const feeDenom = process.env.NEXT_PUBLIC_FEE_DENOM || "uxion";
@@ -67,13 +69,17 @@ const Home: React.FC = () => {
     useState<ExecuteResultOrUndefined>(undefined);
   const [mintAmount, setMintAmount] = useState<string>("");
   const [usdcBalance, setUsdcBalance] = useState<string>("0");
+  const [mintNft, setMintNft] = useState<ExecuteResult | undefined>(undefined);
 
   useEffect(() => {
-    if (account) {
+    console.log("Account:", account);
+    if (account && account.bech32Address != "") {
       setIsConnected(true);
       checkUsdcBalance();
+      handleNumTokens();
     } else {
       setIsConnected(false);
+      setUsdcBalance("0");
     }
   }, [account]);
 
@@ -82,9 +88,10 @@ const Home: React.FC = () => {
       try {
         const balance = await client.getBalance(
           account.bech32Address,
-          feeDenom
-          // ibcDenom
+          // feeDenom
+          ibcDenom
         );
+
         let balanceAmount = Number(balance.amount) / 1000000;
         setUsdcBalance(balanceAmount.toFixed(2));
       } catch (error) {
@@ -92,6 +99,28 @@ const Home: React.FC = () => {
       }
     }
   };
+  const handleNumTokens = async () => {
+    try {
+      if (!client || !account) {
+        throw new Error("Wallet not connected");
+      }
+
+      const queryMsg = { num_tokens: {} };
+      console.log("Query Message:", queryMsg);
+
+      const queryRes = await client.queryContractSmart(
+        nftContractAddress,
+        queryMsg
+      );
+      console.log("Query Result:", queryRes);
+
+      // Assuming the response has a 'count' field
+      setMintNft(queryRes.count);
+    } catch (error) {
+      console.error("Query error:", error);
+    }
+  };
+
   const handleMint = async (): Promise<void> => {
     setLoading(true);
 
@@ -121,7 +150,7 @@ const Home: React.FC = () => {
         },
         "",
 
-        coins(1, "uxion")
+        coins(1, ibcDenom)
       );
 
       console.log("Mint Result:", mintRes);
@@ -131,53 +160,13 @@ const Home: React.FC = () => {
       checkUsdcBalance();
     } catch (error) {
       console.error("Minting error:", error);
-      toast.error(`Minting failed: ${error}`);
+      toast.error(`Minting failed`);
     } finally {
       setLoading(false);
     }
   };
 
-  // const handleMint = async (): Promise<void> => {
-  //   if (!mintAmount) return;
-
-  //   setLoading(true);
-
-  //   try {
-  //     if (client && account) {
-  //       const mintMsg = { mint: {} }; // Adjust this based on your contract's actual message structure
-
-  //       const fee = {
-  //         amount: coins(feeAmount, feeDenom),
-  //         gas: gasLimit,
-  //       };
-  //       console.log(client);
-
-  //       console.log("Mint fee:", fee);
-  //       const mintRes = await client.execute(
-  //         account.bech32Address,
-  //         mintContractAddress,
-  //         mintMsg,
-  //         {
-  //           amount: [{ amount: "0", denom: "uxion" }],
-  //           gas: "500000",
-  //         },
-  //         "",
-  //         [{ amount: mintAmount, denom: "uxion" }]
-  //       );
-
-  //       setExecuteResult(mintRes);
-  //       toast.success("Property minted successfully!");
-  //       console.log("Mint Result:", mintRes);
-  //       checkUsdcBalance(); // Refresh USDC balance after minting
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     toast.error("Minting failed: ");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
+  console.log("mintNft", mintNft);
   return (
     <div className="container mx-auto p-4 burnt-bg text-black">
       <header className="flex justify-between items-center mb-8">
@@ -262,7 +251,7 @@ const Home: React.FC = () => {
             </div>
           </div>
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            {/* <label className="block text-sm font-medium text-gray-700 mb-2">
               Amount
             </label>
             {isConnected ? (
@@ -281,12 +270,16 @@ const Home: React.FC = () => {
                 className="w-full text-black border rounded p-2 cursor-not-allowed"
                 disabled
               />
-            )}
+            )} */}
             <div className="flex justify-between mt-2 ">
               <span style={{ color: "#3b82f6" }} className="font-bold">
-                {usdcBalance} XION
+                {usdcBalance} USDC
               </span>
-              <span>235/500 Minted</span>
+
+              <span>
+                {" "}
+                {mintNft !== undefined ? mintNft.toString() : "0"}/500 Minted
+              </span>
             </div>
           </div>
 
@@ -369,36 +362,3 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-/*
-
-    const msg = {
-      mint: {},
-    };
-    // Set the fee in the correct denomination
-    const fee = {
-      amount: [{ amount: feeAmount, denom: feeDenom }], // Adjust the amount as needed
-      gas: gasLimit,
-    };
-
-    try {
-      const mintRes = await client?.execute(
-        account.bech32Address,
-        mintContractAddress,
-        msg,
-        fee,
-        "",
-        [
-          {
-            denom: ibcDenom,
-            amount: mintAmount.toString(),
-          },
-        ]
-      );
-      setExecuteResult(mintRes);
-    } catch (error) {
-      console.log("Error:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-*/

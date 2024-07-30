@@ -24,7 +24,13 @@ export default function RootLayout({
             contracts: [
               {
                 address: mintContractAddress || "",
-                amounts: [{ denom: "uxion", amount: "1000000" }],
+                amounts: [
+                  {
+                    denom:
+                      "ibc/57097251ED81A232CE3C9D899E7C8096D6D87EF84BA203E12E424AA4C9B57A64",
+                    amount: "1000000",
+                  },
+                ],
               },
             ],
           }}
