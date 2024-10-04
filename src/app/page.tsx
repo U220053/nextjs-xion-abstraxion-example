@@ -131,7 +131,7 @@ const Home: React.FC = () => {
 
       console.log("Wallet Address:", account.bech32Address);
 
-      const mintMsg = { mint: {} };
+      const mintMsg = { deposit: {} };
       const fee = {
         amount: coins(feeAmount, feeDenom),
         gas: gasLimit,
@@ -150,7 +150,7 @@ const Home: React.FC = () => {
         },
         "",
 
-        coins(1, ibcDenom)
+        coins(100, ibcDenom)
       );
 
       console.log("Mint Result:", mintRes);
